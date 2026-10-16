@@ -3,7 +3,15 @@
 """
 
 # Global variables
-transactions = []
+transactions = [
+    {'amount': 500, 'category': 'food', 'description': 'for lunch'},
+    {'amount': 75000, 'category': 'rent', 'description': 'for christmas'},
+    {'amount': 1200, 'category': 'transport', 'description': 'bus fare'},
+    {'amount': 3000, 'category': 'food', 'description': 'groceries'},
+    {'amount': 15000, 'category': 'income', 'description': 'freelance gig'},
+    {'amount': 450, 'category': 'drinks', 'description': 'zobo'},
+    {'amount': 10000, 'category': 'savings', 'description': 'ajo contribution'}
+]
 running = True
 
 # Functions
@@ -43,11 +51,16 @@ def add_transaction(transactions):
         transaction["description"] = description
             
     transactions.append(transaction)
-    print(transactions)
     print("\nTransaction added!")
 
-def view_balance():
-    print("\nView Balance selected...")
+def view_balance(transactions):
+    if not transactions:
+        print("\nNo transactions yet.")
+        return
+        
+    total_spent = sum(transaction["amount"] for transaction in transactions)
+    no_of_transactions = len(transactions)
+    print(f"\nTotal spent: ₦{total_spent}\nNumber of transactions: {no_of_transactions}")
 
 def view_reports():
     print("\nView Reports selected...")
@@ -69,7 +82,7 @@ while running:
     if user_input == 1:
         add_transaction(transactions)
     elif user_input == 2:
-        view_balance()
+        view_balance(transactions)
     elif user_input == 3:
         view_reports()
     elif user_input == 4:
