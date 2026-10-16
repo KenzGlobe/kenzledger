@@ -3,24 +3,30 @@
 """
 
 # Imports
+import json
 import kenz_ui as ui
 
 # App Header
 ui.big_title("KenzLedger")
 
-# Global variables
-transactions = [
-    {'amount': 500, 'category': 'food', 'description': 'for lunch'},
-    {'amount': 75000, 'category': 'rent', 'description': 'for christmas'},
-    {'amount': 1200, 'category': 'transport', 'description': 'bus fare'},
-    {'amount': 3000, 'category': 'food', 'description': 'groceries'},
-    {'amount': 15000, 'category': 'income', 'description': 'freelance gig'},
-    {'amount': 450, 'category': 'drinks', 'description': 'zobo'},
-    {'amount': 10000, 'category': 'savings', 'description': 'ajo contribution'}
-]
+# Variables
 running = True
 
 # Functions
+def load_transactions(filename):
+    try:
+        with open(filename, "r") as file:
+            transactions = json.load(file)
+        return transactions
+    except FileNotFoundError:
+        return []
+    except json.JSONDecodeError:
+        return []
+
+def save_transactions(transactions, filename):
+    with open(filename, "w") as file:
+        json.dump(transactions, file, indent=4)
+
 def add_transaction(transactions):
     ui.header("=== Add Transaction ===")
     transaction = {}
@@ -61,6 +67,7 @@ def add_transaction(transactions):
         transaction["description"] = description
             
     transactions.append(transaction)
+    save_transactions(transactions, "transactions.json")
     print("\nTransaction added! ✔️")
     ui.cutter()
 
@@ -83,7 +90,6 @@ def view_reports(transactions):
         ui.cutter()
         return
 
-    print("\n=== Report ===\n")
     print("By Category:")
 
     report = {}
@@ -107,6 +113,8 @@ def view_reports(transactions):
     grand_count = len(transactions)
     print(f"\nTotal: ₦{grand_total:,} ({grand_count} transactions)")
     ui.cutter()
+
+transactions = load_transactions("transactions.json")
 
 # Loop to keep app running
 while running:
