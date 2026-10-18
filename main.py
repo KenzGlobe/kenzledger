@@ -30,9 +30,24 @@ def save_transactions(transactions, filename):
 def add_transaction(transactions):
     ui.header("=== Add Transaction ===")
     transaction = {}
-    
+
     while True:
-        amount = input("\nAmount (or \"q\" to cancel): ")
+        type_of_transaction = input("\nType (i/e for income/expense, or \"q\" to cancel): ")
+        if type_of_transaction == "q":
+            ui.cutter()
+            return
+        elif type_of_transaction.lower() == "income" or type_of_transaction.lower() == "i":
+            transaction["type"] = "income"
+            break
+        elif type_of_transaction.lower() == "expense" or type_of_transaction.lower() == "e":
+            transaction["type"] = "expense"
+            break
+        else:
+            print("Invalid option.")
+            continue
+            
+    while True:
+        amount = input("Amount (or \"q\" to cancel): ")
         if amount == "q":
             ui.cutter()
             return
@@ -77,10 +92,23 @@ def view_balance(transactions):
         print("\nNo transactions yet.")
         ui.cutter()
         return
-        
-    total_spent = sum(transaction["amount"] for transaction in transactions)
+
+    total_expense = 0
+    total_income = 0
     no_of_transactions = len(transactions)
-    print(f"\nTotal spent: ₦{total_spent:,}\nNumber of transactions: {no_of_transactions}")
+    
+    for transaction in transactions:
+        tx_type = transaction.get("type", "expense")
+        
+        if tx_type == "expense":
+            total_expense += transaction["amount"]
+        elif tx_type == "income":
+            total_income += transaction["amount"]
+
+    balance = total_income - total_expense
+    balance_str = f"-₦{abs(balance):,}" if balance < 0 else f"₦{balance:,}"
+    
+    print(f"\nTotal income: ₦{total_income:,}\nTotal expenses: ₦{total_expense:,}\n\nNet balance: {balance_str}\nNumber of transactions: {no_of_transactions}")
     ui.cutter()
     
 def view_reports(transactions):
