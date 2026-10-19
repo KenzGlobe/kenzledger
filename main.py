@@ -118,30 +118,56 @@ def view_reports(transactions):
         ui.cutter()
         return
 
-    print("By Category:")
+    income_report = {}
+    expense_report = {}
+    income_count = 0
+    expense_count = 0
+    total_income = 0
+    total_expense = 0
+    
 
-    report = {}
-    for item in transactions:
-        cat = item["category"]
-        amt = item["amount"]
+    for transaction in transactions:
+        tx_type = transaction.get("type", "expense")
+        cat = transaction["category"]
+        amt = transaction["amount"]
 
-        if cat not in report:
-            report[cat] = {"total": 0, "count": 0}
+        if tx_type == "income":
+            income_count += 1
+            if cat not in income_report:
+                income_report[cat] = 0
+            income_report[cat] += amt
+            total_income += amt
+            
+        elif tx_type == "expense":
+            expense_count += 1
+            if cat not in expense_report:
+                expense_report[cat] = 0
+            expense_report[cat] += amt
+            total_expense += amt
 
-        report[cat]["total"] += amt
-        report[cat]["count"] += 1
+    if not income_report:
+        print("\n===» Income: No income transaction.")
+    else:
+        print(f"\n===» Income: {income_count} transactions")
+        for cat, total in income_report.items():
+            print(f" {cat:<12} ₦{total:,}")
+        print(f"\nTotal income is ₦{total_income:,}")
 
-    for cat, data in report.items():
-        total = data["total"]
-        count = data["count"]
-        word = "transaction" if count == 1 else "transactions"
-        print(f" {cat:<12} ₦{total:,} ({count} {word})")
-
-    grand_total = sum(item["amount"] for item in transactions)
-    grand_count = len(transactions)
-    print(f"\nTotal: ₦{grand_total:,} ({grand_count} transactions)")
+    if not expense_report:
+        print("\n===» Expense: No expense transaction.")
+    else:
+        print(f"\n===» Expense: {expense_count} transactions")
+        for cat, total in expense_report.items():
+            print(f" {cat:<12} ₦{total:,}")
+        print(f"\nTotal expense is ₦{total_expense:,}")
+            
+    ui.cutter()
+    balance_num = total_income - total_expense
+    balance_str = f"-₦{abs(balance_num):,}" if balance_num < 0 else f"₦{balance_num:,}"
+    print(f"Total Income: ₦{total_income:,}\nTotal Expense: ₦{total_expense:,}\nBalance: {balance_str}")
     ui.cutter()
 
+# Load transactions.json file
 transactions = load_transactions("transactions.json")
 
 # Loop to keep app running
