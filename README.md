@@ -1,5 +1,7 @@
 # KenzLedger 🪙
 
+![KenzLedger Terminal](https://raw.githubusercontent.com/KenzGlobe/kenzledger/refs/heads/main/Termux.png)
+
 A command-line personal finance and expense tracker built entirely on a mobile phone using Python, Termux, and Pydroid 3.
 
 ## ✨ Features
