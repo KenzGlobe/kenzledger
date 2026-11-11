@@ -1,5 +1,5 @@
 """
-    KenzLedger
+    KenzLedger (CLI App)
 """
 
 # Imports

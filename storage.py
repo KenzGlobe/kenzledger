@@ -1,4 +1,4 @@
-
+# storage file
 import json
 
 def load_transactions(filename):
